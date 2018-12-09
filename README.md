@@ -7,6 +7,28 @@ _Reference_: https://static.javadoc.io/io.vavr/vavr/0.9.2/io/vavr/Patterns.html
 _Reference_: https://static.javadoc.io/io.vavr/vavr/0.9.2/io/vavr/Predicates.html
 
 # preface
+Pattern matching is a great feature that saves us 
+from writing stacks of if-then-else branches. It 
+reduces the amount of code while focusing on the 
+relevant parts.
+
+Vavr provides a match API that is close to Scala’s match.
+
+* `$()` - wildcard pattern 
+    * saves us from a `MatchError` which is 
+    thrown if no case matches
+    * it is often very handy to return `Option`
+    as a way of programming no matches scenario
+        ```
+        Option<String> s = Match(i).option(
+            Case($(0), "zero")
+        );
+        ```
+* `$(value)` - equals pattern
+* `$(predicate)` - conditional pattern
+
+
+
 ## predicates
 Class `Predicates` defines general-purpose predicates which are 
 particularly useful when working with `API.Match`.
