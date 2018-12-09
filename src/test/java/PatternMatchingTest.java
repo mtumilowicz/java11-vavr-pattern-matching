@@ -85,18 +85,18 @@ public class PatternMatchingTest {
 
     @Test
     public void forAll2() {
-        List<Integer> evens = List.of(2, 4, 6);
-        List<Integer> odds = List.of(1, 3, 5);
-        List<Integer> randoms = List.of(1, 4);
+        List<Integer> moreThan2000 = List.of(2, 2001);
+        List<Integer> moreThan1000LessThan2000 = List.of(1500, 3);
+        List<Integer> lessThan1000 = List.of(0, 5);
 
         Function1<List<Integer>, String> check = (List<Integer> numbers) -> Match(numbers).of(
-                Case($(exists(n -> n > 1000)), "> 1000"),
                 Case($(exists(n -> n > 2000)), "> 2000"),
-                Case($(), "neither evens nor odds")
+                Case($(exists(n -> n > 1000)), "> 1000 & <= 2000"),
+                Case($(), "<= 1000")
         );
 
-        assertThat(check.apply(evens), is("evens"));
-        assertThat(check.apply(odds), is("odds"));
-        assertThat(check.apply(randoms), is("neither evens nor odds"));
+        assertThat(check.apply(moreThan2000), is("> 2000"));
+        assertThat(check.apply(moreThan1000LessThan2000), is("> 1000 & <= 2000"));
+        assertThat(check.apply(lessThan1000), is("<= 1000"));
     }
 }
