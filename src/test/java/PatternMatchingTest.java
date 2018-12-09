@@ -9,8 +9,7 @@ import java.util.function.IntFunction;
 import static io.vavr.API.*;
 import static io.vavr.Patterns.$Failure;
 import static io.vavr.Patterns.$Success;
-import static io.vavr.Predicates.exists;
-import static io.vavr.Predicates.instanceOf;
+import static io.vavr.Predicates.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -84,7 +83,7 @@ public class PatternMatchingTest {
     }
 
     @Test
-    public void forAll2() {
+    public void existsTest() {
         List<Integer> moreThan2000 = List.of(2, 2001);
         List<Integer> moreThan1000LessThan2000 = List.of(1500, 3);
         List<Integer> lessThan1000 = List.of(0, 5);
@@ -98,5 +97,18 @@ public class PatternMatchingTest {
         assertThat(check.apply(moreThan2000), is("> 2000"));
         assertThat(check.apply(moreThan1000LessThan2000), is("> 1000 & <= 2000"));
         assertThat(check.apply(lessThan1000), is("<= 1000"));
+    }
+    
+    @Test
+    public void planeService() {
+        Function1<Integer, PlaneService> get = (Integer price) -> Match(price).of(
+                Case($(n -> n > 3000), value -> PlaneService.BUSINESS_CLASS),
+                Case($(Predicates.<Integer>allOf(n -> n > 2000, n -> n <= 3000)), value -> PlaneService.FIRST_CLASS),
+                Case($(n -> n <= 2000), value -> PlaneService.ECONOMY_CLASS)
+        );
+        
+        assertThat(get.apply(3500), is(PlaneService.BUSINESS_CLASS));
+        assertThat(get.apply(2500), is(PlaneService.FIRST_CLASS));
+        assertThat(get.apply(1500), is(PlaneService.ECONOMY_CLASS));
     }
 }
